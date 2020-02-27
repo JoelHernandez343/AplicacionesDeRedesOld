@@ -3,6 +3,11 @@
     src: url("../fonts/Poppins/Poppins-ExtraBold.ttf");
 }
 
+@font-face {
+    font-family: "Material Icons";
+    src: url("../fonts/MaterialIcons/MaterialIcons-Regular.ttf");
+}
+
 .base {
     -fx-background-color: #ffffff; 
 }
@@ -13,4 +18,9 @@
 
 .font {
     -fx-font-family: "Poppins Bold";
+}
+
+.material-icons {
+    -fx-font-family: 'Material Icons';
+    
 }

@@ -16,6 +16,7 @@ public class App extends Application {
         double width = main.getPrefWidth(), height = main.getPrefHeight();
 
         Font.loadFont(getClass().getResource("/fonts/Poppins/Poppins-Bold.ttf").toExternalForm(), 10);
+        Font.loadFont(getClass().getResource("/fonts/MaterialIcons/MaterialIcons-Regular.ttf").toExternalForm(), 10);
 
         Scene scene = new Scene(main, main.getPrefWidth(), main.getPrefHeight());
         scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());

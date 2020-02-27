@@ -55,5 +55,6 @@
             </VBox>
          </children>
       </HBox>
+      <Label layoutX="507.0" layoutY="52.0" styleClass="material-icons" text="face" />
    </children>
 </fx:root>
