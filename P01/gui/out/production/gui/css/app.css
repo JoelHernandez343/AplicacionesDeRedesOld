@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "Poppins Bold";
+    src: url("../fonts/Poppins/Poppins-ExtraBold.ttf");
+}
+
+.base {
+    -fx-background-color: #ffffff; 
+}
+
+.title {
+    -fx-font-size: 30px;
+}
+
+.font {
+    -fx-font-family: "Poppins Bold";
+}
