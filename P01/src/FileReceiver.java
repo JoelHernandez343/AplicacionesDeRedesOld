@@ -10,9 +10,8 @@ import java.net.*;
 public class FileReceiver {
 
     private Socket client;
-    private DataInputStream receiver;
-    private ObjectInputStream msgReceiver;
     private ObjectOutputStream sender;
+    private ObjectInputStream receiver;
     public FSP status;
     String root;
 
@@ -27,8 +26,7 @@ public class FileReceiver {
         this.root = root;
 
         this.client = client;
-        this.receiver    = new DataInputStream(this.client.getInputStream());
-        this.msgReceiver = new ObjectInputStream(this.client.getInputStream());
+        this.receiver    = new ObjectInputStream(this.client.getInputStream());
         this.sender      = new ObjectOutputStream(this.client.getOutputStream());
 
     }
@@ -40,7 +38,6 @@ public class FileReceiver {
     public void close() throws Exception{
 
         this.receiver.close();
-        this.msgReceiver.close();
         this.sender.close();
         this.client.close();
 
@@ -52,7 +49,7 @@ public class FileReceiver {
      */
     public void accept() throws Exception{
 
-        status = (FSP)msgReceiver.readObject();
+        status = (FSP)receiver.readObject();
 
     }
 
@@ -94,7 +91,7 @@ public class FileReceiver {
             }
 
             System.out.print("\r");
-            System.out.println("Received: + " + file.getName() + " at " + path);
+            System.out.println("Received: " + file.getName() + " at " + path);
         
             status = FSP.S_SUCCESS;
             sender.writeObject(status);
@@ -173,12 +170,18 @@ public class FileReceiver {
      */
     public void deleteFile() throws Exception{
 
+        String path = root + receiver.readUTF();
+
         try {
+            
+            File file = new File(path);
+            
+            if (file.isDirectory())
+                deleteFiles(file.listFiles());
 
-            String path = root + receiver.readUTF();
-            if ((new File(path)).delete()){
+            if (file.delete()){
 
-                System.out.println("Deleted :" + path);
+                System.out.println("Removed: " + path);
 
                 status = FSP.S_SUCCESS;
                 sender.writeObject(status);
@@ -191,13 +194,37 @@ public class FileReceiver {
 
         } catch (Exception e){
     
-            System.out.println("Error deleting directory.");
+            System.out.println("Error deleting directory: " + path);
 
             status = FSP.E_ERROR;
             sender.writeObject(status);
 
         }
 
+    }
+
+    private void deleteFiles(File[] files){
+
+        for (File file : files){
+
+            if (!file.isDirectory()){
+
+                if (file.delete())
+                    System.out.println("Removed: " + file.getAbsolutePath());
+                else
+                    System.out.println("Cannot remove: " + file.getAbsolutePath());
+
+                continue;
+            }
+
+            deleteFiles(file.listFiles());
+
+            if (file.delete())
+                System.out.println("Removed: " + file.getAbsolutePath());
+            else
+                System.out.println("Cannot remove: " + file.getAbsolutePath());
+
+        }
 
     }
 

@@ -31,12 +31,16 @@ public class Server {
 
                         case R_SENT_FILE:
                             receiver.receiveFile();
+                            break;
                         case R_CREATE_DIRECTORY:
                             receiver.createDirectory();
+                            break;
                         case R_TREE_DIRECTORY:
                             receiver.sendTreeDirectory();
+                            break;
                         case R_REMOVE:
                             receiver.deleteFile();
+                            break;
                         default:
                             break;
 
@@ -48,6 +52,7 @@ public class Server {
                 }
 
                 receiver.close();
+                System.out.println("Closed connection with " + client.getInetAddress().getHostAddress());
 
             }
 

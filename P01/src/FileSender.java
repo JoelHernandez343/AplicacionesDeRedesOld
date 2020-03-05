@@ -11,9 +11,8 @@ import java.util.*;
 public class FileSender {
 
     private Socket connection;
-    private DataOutputStream sender;
     private ObjectInputStream receiver;
-    private ObjectOutputStream msgSender;
+    private ObjectOutputStream sender;
 
     /**
      * Create a {@code FileSender}
@@ -27,9 +26,8 @@ public class FileSender {
         InetAddress dest = InetAddress.getByName(server);
 
         this.connection = new Socket(dest, port);
-        this.sender     = new DataOutputStream(this.connection.getOutputStream());
+        this.sender     = new ObjectOutputStream(this.connection.getOutputStream());
         this.receiver   = new ObjectInputStream(this.connection.getInputStream());
-        this.msgSender  = new ObjectOutputStream(this.connection.getOutputStream());
 
     }
 
@@ -39,11 +37,10 @@ public class FileSender {
      */
     public void close() throws IOException{
 
-        msgSender.writeObject(FSP.C_CLOSE_CONECCTION);
+        sender.writeObject(FSP.C_CLOSE_CONECCTION);
 
         this.sender.close();
         this.receiver.close();
-        this.msgSender.close();
         this.connection.close();
 
     }
@@ -112,8 +109,8 @@ public class FileSender {
      */
     private void createDirectory(String path) throws Exception{
 
-        msgSender.writeObject(FSP.R_CREATE_DIRECTORY);
-        msgSender.flush();
+        sender.writeObject(FSP.R_CREATE_DIRECTORY);
+        sender.flush();
 
         sender.writeUTF(path);
         sender.flush();
@@ -136,8 +133,8 @@ public class FileSender {
      */
     private void sendFile(File file, String path) throws IOException, ClassNotFoundException{
 
-        msgSender.writeObject(FSP.R_SENT_FILE);
-        msgSender.flush();
+        sender.writeObject(FSP.R_SENT_FILE);
+        sender.flush();
 
         DataInputStream fileReader = new DataInputStream(new FileInputStream(file));
 
@@ -169,7 +166,7 @@ public class FileSender {
         FSP report = (FSP)receiver.readObject();
 
         if (report.compareTo(FSP.S_SUCCESS) == 0)
-            System.out.println("Sent " + file.getName() + ".");
+            System.out.println("Sent " + file.getName() + " [100%]    ");
         else
             System.out.println("Error sending: " + file.getName() + " to " + path);
 
@@ -203,8 +200,8 @@ public class FileSender {
      */
     public FileTree getRemoteTree() throws Exception{
 
-        msgSender.writeObject(FSP.R_TREE_DIRECTORY);
-        msgSender.flush();
+        sender.writeObject(FSP.R_TREE_DIRECTORY);
+        sender.flush();
 
         return (FileTree)receiver.readObject();
 
@@ -217,8 +214,8 @@ public class FileSender {
      */
     public void deleteRemote(String path) throws Exception{
 
-        msgSender.writeObject(FSP.R_REMOVE);
-        msgSender.flush();
+        sender.writeObject(FSP.R_REMOVE);
+        sender.flush();
 
         sender.writeUTF(path);
         sender.flush();

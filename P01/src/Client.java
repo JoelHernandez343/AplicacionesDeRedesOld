@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.*;
 
 public class Client {
 
@@ -8,8 +7,13 @@ public class Client {
         try {
 
             FileSender fileSender = new FileSender("localhost", 1234);
-
             
+
+            fileSender.deleteRemote("/client");
+
+            // FileTree tree = new FileTree(new File("client"));
+            
+            // fileSender.send(tree);
 
             fileSender.close();
 
